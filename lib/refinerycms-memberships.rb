@@ -19,7 +19,7 @@ module Refinery
         Refinery::Admin::DashboardController.class_eval do
           old_index = instance_method(:index)
           define_method(:index){|*args|
-            if current_user.has_role?(:super_user) || current_user.has_role?(:refinery)
+            if current_refinery_user.has_role?(:super_user) || current_refinery_user.has_role?(:refinery)
               old_index.bind(self).call(*args)
             else
               redirect_to '/'
@@ -65,9 +65,9 @@ module Refinery
             @page = Page.find(params[:path] ? params[:path].to_s.split('/').last : params[:id],
               :include => :roles)
 
-            if @page.user_allowed?(current_user) &&
+            if @page.user_allowed?(current_refinery_user) &&
               (@page.try(:live?) ||
-                  (refinery_user? and current_user.authorized_plugins.include?("refinery_pages")))
+                  (refinery_user? and current_refinery_user.authorized_plugins.include?("refinery_pages")))
 
               # if the admin wants this to be a "placeholder" page which goes to its first child, go to that instead.
               if @page.skip_to_first_child and (first_live_child = @page.children.order('lft ASC').where(:draft=>false).first).present?

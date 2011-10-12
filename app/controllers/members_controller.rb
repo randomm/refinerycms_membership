@@ -1,7 +1,7 @@
 class MembersController < ApplicationController
 
   crudify :member
-  
+
   # Protect these actions behind member login - do we need to check out not signing up when signed in?
   before_filter :redirect?, :except => [:new, :create]
 
@@ -56,7 +56,7 @@ class MembersController < ApplicationController
       @is_admin = is_admin?
       @page = Page.find_by_link_url('/member_edit')
       render :action => 'edit'
-    
+
     end
   end
 
@@ -68,14 +68,14 @@ class MembersController < ApplicationController
     if @member.save
       MembershipMailer.application_confirmation_member(@member).deliver
       MembershipMailer.application_confirmation_admin(@member).deliver
-      
+
       redirect_to(is_admin? ? admin_memberships_path : root_path )
 
     else
       @page = Page.find_by_link_url('/members/new')
       @member.errors.delete(:username) # this is set to email
       render :action => :new
-      
+
     end
 
   end
@@ -150,28 +150,28 @@ class MembersController < ApplicationController
   def accept_member(member)
     member.activate
     MembershipMailer.acceptance_confirmation_member(member).deliver
-    MembershipMailer.acceptance_confirmation_admin(member, current_user).deliver
+    MembershipMailer.acceptance_confirmation_admin(member, current_refinery_user).deliver
   end
 
   def reject_member(member)
     member.deactivate
     MembershipMailer.rejection_confirmation_member(member).deliver
-    MembershipMailer.rejection_confirmation_admin(member, current_user).deliver
+    MembershipMailer.rejection_confirmation_admin(member, current_refinery_user).deliver
   end
 
 protected
   def redirect?
-    if current_user.nil?
+    if current_refinery_user.nil?
       redirect_to new_user_session_path
     end
   end
 
   # unless you're an admin, you can only edit your profile
   def get_member(id)
-    is_admin? ?  Member.find(id) : current_user
+    is_admin? ?  Member.find(id) : current_refinery_user
   end
 
   def is_admin?
-    !(current_user.role_ids & [REFINERY_ROLE_ID, SUPERUSER_ROLE_ID]).empty?
+    !(current_refinery_user.role_ids & [REFINERY_ROLE_ID, SUPERUSER_ROLE_ID]).empty?
   end
 end
