@@ -11,6 +11,7 @@ module Refinery
       config.after_initialize do
         Refinery::Plugin.register do |plugin|
           plugin.name = "memberships"
+          plugin.url = '/refinery/memberships'
           plugin.menu_match = /(refinery|admin)\/(memberships)?(page_roles)?(user_roles)?$/
         end
 
