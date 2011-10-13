@@ -1,4 +1,4 @@
-class Admin::MembershipsController < Admin::BaseController
+class Admin::MembershipsController < ::Refinery::AdminController
 
   # POST /refinery/*_roles/create_multiple.json
   def create_multiple
@@ -16,18 +16,18 @@ class Admin::MembershipsController < Admin::BaseController
 
   def index
     respond_to do |format|
-      format.html { 
-        @pages = Page.all
-        @roles = Role.find_all_by_id(MEMBER_ROLE_ID)
+      format.html {
+        @pages = Refinery::Page.all
+        @roles = Refinery::Role.find_all_by_id(MEMBER_ROLE_ID)
       }
-      format.js{ 
+      format.js{
         @objects = current_objects(params)
         @total_objects = total_objects(params)
         render :layout => false
       }
     end
   end
-  
+
 private
   def current_objects(params={})
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0)+1
@@ -68,7 +68,7 @@ private
         organization LIKE '%#{params[:sSearch]}%'OR
         email LIKE '%#{params[:sSearch]}%'
     ) unless params[:sSearch].blank?
-    
+
     return conditions.join(" AND ")
   end
 

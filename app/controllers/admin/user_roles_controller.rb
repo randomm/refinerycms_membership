@@ -1,4 +1,4 @@
-class Admin::UserRolesController < Admin::MembershipsController
+class Admin::UserRolesController < ::Refinery::AdminController
 
   # PUT /refinery/user_roles/:id <-- member_id bad REST, but convenient for this!
   def update

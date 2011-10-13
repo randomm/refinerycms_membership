@@ -1,2 +1,2 @@
-class Admin::PageRolesController < Admin::MembershipsController
+class Admin::PageRolesController < ::Refinery::AdminController
 end
