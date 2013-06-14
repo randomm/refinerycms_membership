@@ -56,6 +56,7 @@ module Refinery
       end
 
       def member_created_admin(member)
+        debugger 
         @member = member
 
         mail :to => admins, :subject => "New user registration on #{Refinery::Core.site_name}"
